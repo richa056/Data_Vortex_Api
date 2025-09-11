@@ -4,27 +4,29 @@ import pandas as pd
 app = Flask(__name__)
 
 def load(path):
+    """Helper function to read CSV and convert to JSON records"""
     return pd.read_csv(path).to_dict(orient="records")
 
 @app.route("/health")
 def health():
     return {"status": "ok"}
 
+
 # ----------------------- ROUND-1 -----------------------
 @app.route("/round1/earth_planet")
-def earth_planet():
+def round1_earth_planet():
     return jsonify(load("data/round1_earth_planet.csv"))
 
 @app.route("/round1/earth_resources")
-def earth_resources():
+def round1_earth_resources():
     return jsonify(load("data/round1_earth_resources.csv"))
 
 @app.route("/round1/earth_climate")
-def earth_climate():
+def round1_earth_climate():
     return jsonify(load("data/round1_earth_climate.csv"))
 
 @app.route("/round1/earth_soil")
-def earth_soil():
+def round1_earth_soil():
     return jsonify(load("data/round1_earth_soil.csv"))
 
 
@@ -53,7 +55,7 @@ def round2_habitability_scores():
 def round2_colonization_history():
     return jsonify(load("data/colonization_history.csv"))
 
-# Round-2 also has biosphere + energy_sources
+# New endpoints added in Round-2
 @app.route("/round2/biosphere")
 def round2_biosphere():
     return jsonify(load("data/biosphere.csv"))
@@ -78,4 +80,27 @@ def round3_soil():
 
 @app.route("/round3/resources")
 def round3_resources():
-    return jsonify({"error":"Endpoint unavail
+    # Endpoint deliberately disabled in crisis mode
+    return jsonify({"error": "Endpoint unavailable in crisis"}), 404
+
+
+@app.route("/round3/habitability_scores")
+def round3_habitability_scores():
+    return jsonify(load("data/habitability_scores.csv"))
+
+@app.route("/round3/colonization_history")
+def round3_colonization_history():
+    return jsonify(load("data/colonization_history.csv"))
+
+@app.route("/round3/biosphere")
+def round3_biosphere():
+    return jsonify(load("data/biosphere.csv"))
+
+@app.route("/round3/energy_sources")
+def round3_energy_sources():
+    return jsonify(load("data/energy_sources.csv"))
+
+
+if __name__ == "__main__":
+    # host="0.0.0.0" is required for Render deployment
+    app.run(host="0.0.0.0", port=5000)
